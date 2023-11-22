@@ -9,6 +9,8 @@
 #include <avr/wdt.h>
 #include "ApplicationFunctionSet_xxx0.h"
 
+
+
 void setup()
 {
   // put your setup code here, to run once:
@@ -19,8 +21,6 @@ void setup()
 void loop()
 {
   //put your main code here, to run repeatedly :
-  Serial.begin(115200); 
-  Serial.println("boo");
   wdt_reset();
   Application_FunctionSet.ApplicationFunctionSet_SensorDataUpdate();
   Application_FunctionSet.ApplicationFunctionSet_KeyCommand();
