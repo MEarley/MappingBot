@@ -3,10 +3,17 @@
 Servo servo;  // create servo object to control a servo
 
 // Define Pins
+const int ECHOPIN = 12;
+const int TRIGPIN = 13;
+const int SERVOPIN = 10;  // Ultra Sonic Servo
+
+/*
 const int ECHOPIN = 8;
 const int TRIGPIN = 9;
 const int LIGHTPIN = 10;
 const int SERVOPIN = 11;
+*/
+
 int pos = 0;
 
 int i = 0;
@@ -23,12 +30,6 @@ void setup() {
   pinMode(TRIGPIN, OUTPUT);
   Serial.print("TRIG Pin set to: ");
   Serial.println(TRIGPIN);
-
-  pinMode(LIGHTPIN, OUTPUT);
-  Serial.print("LIGHT Pin set to: ");
-  Serial.println(LIGHTPIN);
-  digitalWrite(LIGHTPIN, LOW);
-
 
   servo.attach(SERVOPIN);  // attaches the servo on pin 9 to the servo object
   Serial.print("SERVO Pin set to: ");
