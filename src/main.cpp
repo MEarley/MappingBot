@@ -1,20 +1,20 @@
 #include <iostream>
 #include <windows.h>
 
-#define SERIAL_PORT "\\\\.\\COM5"
+#define SERIAL_PORT "\\\\.\\COM6"
 
 int main(){
 
     // Open serial port
     HANDLE serialHandle;
 
-    serialHandle = CreateFile(SERIAL_PORT,
-                                GENERIC_READ,
+    serialHandle = CreateFileA(static_cast<LPCSTR>(SERIAL_PORT),
+                                GENERIC_READ | GENERIC_WRITE,
                                 0,
-                                0,
+                                NULL,
                                 OPEN_EXISTING,
                                 FILE_ATTRIBUTE_NORMAL,
-                                0);
+                                NULL);
 
     // Setting Parameters
     DCB serialParams = { 0 };
@@ -22,6 +22,7 @@ int main(){
 
     if (!GetCommState(serialHandle, &serialParams)) {
         std::cout<<"Error getting state"<<std::endl;
+        std::cout<<(int)GetLastError()<<std::endl; 
         char lastError[1024];
         FormatMessage(
                     FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
@@ -32,6 +33,7 @@ int main(){
                     1024,
                     NULL);
         std::cout<<lastError<<std::endl; 
+        
     }
 
     GetCommState(serialHandle, &serialParams);
