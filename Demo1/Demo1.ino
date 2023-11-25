@@ -3,6 +3,8 @@
 #include "ApplicationFunctionSet_xxx0.cpp"
 #include <Servo.h>
 
+#define PI 3.1415926535897932384626433832795
+
 DeviceDriverSet_Motor AppMotor;
 Application_xxx Application_SmartRobotCarxxx0;
 Servo servo;  // create servo object to control a servo
@@ -12,6 +14,7 @@ const int TRIGPIN = 13;
 const int SERVOPIN = 10;  // Ultra Sonic Servo
 
 int pos = 0;
+bool isScanning = true;
 
 void setup() {
   AppMotor.DeviceDriverSet_Motor_Init();
@@ -42,24 +45,46 @@ void setup() {
 }
 
 void loop() {
-  digitalWrite(TRIGPIN, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(TRIGPIN, LOW);
+  
+  while(isScanning == true){
+    digitalWrite(TRIGPIN, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(TRIGPIN, LOW);
 
-  float duration_us = pulseIn(ECHOPIN, HIGH);
-  float distance_cm = 0.017 * duration_us;
+    float duration_us = pulseIn(ECHOPIN, HIGH);
+    float distance_cm = 0.017 * duration_us;
 
-  Serial.println(distance_cm);
-  if(distance_cm > 400){
-    Serial.println("Out of maximum range of 400 cm");
+    //Serial.println(distance_cm);
+    if(distance_cm > 400){
+      //Serial.println("Out of maximum range of 400 cm");
+      distance_cm = 450;
+    }
+
+    if(pos < 180){
+      servo.write(pos++);              // tell servo to go to position in variable 'pos'
+      delay(15);                       // waits 15 ms for the servo to reach the position
+    }
+
+    // Cosθ = x / r | x = rCosθ = x 
+    // Sinθ = y / r | y = rSinθ
+    // degrees to radians = degrees * pi / 180
+    float radians = pos * PI / 180;
+    //Serial.print(PI);
+    //Serial.print(", ");
+    //Serial.println(pos);
+    float x = distance_cm * cos(radians); 
+    float y = distance_cm * sin(radians);
+
+    Serial.print(x);
+    Serial.print(", ");
+    Serial.println(y);
+
+    delay(100);
+  
+    if(pos >= 180){
+      isScanning = false;
+    }
   }
-
-  if(pos < 180){
-    servo.write(pos++);              // tell servo to go to position in variable 'pos'
-    delay(15);                       // waits 15 ms for the servo to reach the position
-  }
-
-  delay(500);
 
 
 
