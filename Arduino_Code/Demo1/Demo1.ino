@@ -76,15 +76,20 @@ void loop() {
     float y = distance_cm * sin(radians);
 
     Serial.print(x);
-    Serial.print(", ");
+    Serial.print(",");
     Serial.println(y);
+    Serial.println("");
 
     delay(100);
   
     if(pos >= 180){
       isScanning = false;
+      Serial.print("Done.");
     }
   }
+  delay(10000);
+  Serial.print(".");
+
 
 
 
