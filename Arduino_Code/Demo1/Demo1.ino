@@ -78,7 +78,7 @@ void loop() {
     Serial.print(x);
     Serial.print(",");
     Serial.println(y);
-    Serial.println("");
+    //Serial.println("");
 
     delay(100);
   
