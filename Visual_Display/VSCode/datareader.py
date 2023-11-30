@@ -3,26 +3,42 @@ import csv
 
 COMPORT = "COM3"
 CSV_FILE = r"C:\Users\livid\Documents\GitHub\MappingBot\Visual_Display\VSCode\locationdata.csv"
+global points
+points = []
 
 def saveData():
     
     # Send data to CSV file
-    field_names = ["x","y"] 
+    field_names = ["x","y","angle"] 
     with open(CSV_FILE, 'w') as csvfile: 
         writer = csv.DictWriter(csvfile, fieldnames = field_names) 
         writer.writeheader() 
-        writer.writerows(topCoins) 
+        writer.writerows(points) 
     print('Saved data')
     return
 
 def readSerial():
      ser = serial.Serial(COMPORT, 115200)
+     start = False
      while True:
-          cc=str(ser.readline())
-          if(cc[2:][:-5] == "Done."):
+          line=str(ser.readline())
+          if(line[2:][:-5] == "Done."):
+               print(line[2:][:-5])
                saveData()
                break
-          print(cc[2:][:-5])
+
+          print(line[2:][:-5])
+
+          if(line[2:][:-5] == "Start!"):
+               start = True
+               continue
+          if(not start):
+              continue 
+          
+          dataPoints = line[2:][:-5].split(",")
+          #print(float(dataPoints[0]))
+          points.append(dict({"x": float(dataPoints[0]) , "y": float(dataPoints[1]), "angle": int(dataPoints[2])}))
+          
 
 def main():
      print("Connecting to serial " + COMPORT)

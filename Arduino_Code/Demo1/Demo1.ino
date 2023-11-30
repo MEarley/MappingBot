@@ -15,6 +15,7 @@ const int SERVOPIN = 10;  // Ultra Sonic Servo
 
 int pos = 0;
 bool isScanning = true;
+bool start = false;
 
 void setup() {
   AppMotor.DeviceDriverSet_Motor_Init();
@@ -45,7 +46,10 @@ void setup() {
 }
 
 void loop() {
-  
+  if(!start){
+    start = true;
+    Serial.println("Start!");
+  }
   while(isScanning == true){
     digitalWrite(TRIGPIN, HIGH);
     delayMicroseconds(10);
@@ -75,20 +79,22 @@ void loop() {
     float x = distance_cm * cos(radians); 
     float y = distance_cm * sin(radians);
 
-    Serial.print(x);
-    Serial.print(",");
-    Serial.println(y);
+    //Serial.print(x);
+    //Serial.print(",");
+    //Serial.print(y);
+    //Serial.print(",");
+    //Serial.println(pos);
+    Serial.println(String(x) + "," + String(y) + "," + String(pos));
     //Serial.println("");
 
     delay(100);
   
     if(pos >= 180){
       isScanning = false;
-      Serial.print("Done.");
+      Serial.println("Done.");
     }
   }
   delay(10000);
-  Serial.print(".");
 
 
 
