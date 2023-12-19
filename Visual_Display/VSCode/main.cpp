@@ -9,14 +9,60 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <vector>
 #include <stdlib.h>
 #include <raylib.h>
 using namespace std;
-int* getData(fstream csvfile);
-int* getData(fstream csvFile){
-	int *fileData;
 
-	return fileData;
+class dataPoint{
+	public:
+	float x;
+	float y;
+	float angle;
+	
+	dataPoint(float x_,float y_,float angle_){
+		x = x_;
+		y = y_;
+		angle = angle_;
+	}
+
+	string toString(){
+		return "x: " + to_string(x) + " y: " + to_string(y) + " angle: " + to_string(angle);
+	}
+
+};
+
+vector<dataPoint> getData(fstream csvfile);
+
+vector<dataPoint> getData(string csvFile){
+	ifstream dataFile;
+	dataFile.open(csvFile);
+	vector<dataPoint> allDataPoints;
+	string line = "";
+	
+	while(getline(dataFile,line)){
+		float x;
+		float y;
+		float angle;
+		string tmpString;
+		stringstream inputString(line);
+
+		getline(inputString, tmpString, ',');
+		x = atof(tmpString.c_str());
+
+		tmpString = "";
+		getline(inputString, tmpString, ',');
+		y = atof(tmpString.c_str());
+
+		tmpString = "";
+		getline(inputString, tmpString, ',');
+		angle = atof(tmpString.c_str());
+
+		dataPoint point(x,y,angle);
+		allDataPoints.push_back(point);
+	}
+
+	return allDataPoints;
 }
 
 int main(){
@@ -26,39 +72,16 @@ int main(){
 	const int screenHeight = 450;
 	int xOFFSET = screenWidth / 2;
 	int yOFFSET = screenHeight / 2;
-	//string CSV_FILE = "C:\\Users\\livid\\Documents\\GitHub\\MappingBot\\Visual_Display\\VSCode\\locationdata.csv";
+	
+	string CSV_FILE = "C:\\Users\\livid\\Documents\\GitHub\\MappingBot\\Visual_Display\\VSCode\\locationdata.csv";
+	
+	vector<dataPoint> allDataPoints = getData(CSV_FILE);
 
+	cout<<allDataPoints[1].toString()<<endl;
 
-	// File pointer 
-    fstream datafile; 
-  
-    // Opens an existing csv file
-    datafile.open("locationdata.csv", ios::in); 
-	string tmp;
-	string line, word;
-	// Read data and store data into an array
-	while (datafile >> tmp) { 
-  
-        //row.clear(); 
-  
-        // read an entire row and 
-        // store it in a string variable 'line' 
-        getline(datafile, line); 
-  
-        // used for breaking words 
-        stringstream s(line); 
-  
-        // read every column data of a row and 
-        // store it in a string variable, 'word' 
-        while (getline(s, word, ',')){ 
-			cout<<word<<endl;
-            // add all the column data 
-            // of a row to a vector 
-            //row.push_back(word); 
-        } 
-	}
-	cout<<"Hello"<<endl;
-	return 1;
+	cout<<"Test"<<endl;
+	return 0;
+
 	InitWindow(screenWidth, screenHeight, "Mapping Bot Uno");
 	SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
 
