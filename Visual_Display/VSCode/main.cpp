@@ -14,16 +14,32 @@
 #include <raylib.h>
 using namespace std;
 
+#define SCREENWIDTH 800
+#define	SCREENHEIGHT 450
+#define xOFFSET SCREENWIDTH / 2
+#define yOFFSET SCREENHEIGHT / 2
+#define SCALE 1
+
 class dataPoint{
 	public:
 	float x;
 	float y;
 	float angle;
+	int size = 1;
+	Color color = RED;
 	
 	dataPoint(float x_,float y_,float angle_){
-		x = x_;
-		y = y_;
+		x = x_ * SCALE;
+		y = y_ * SCALE;
 		angle = angle_;
+	}
+
+	void displayCircle(){
+		DrawCircle(x + xOFFSET, y + yOFFSET,size,color);
+	}
+
+	void displayLine(){
+		DrawLine(xOFFSET,yOFFSET,x + xOFFSET,y + yOFFSET, color);
 	}
 
 	string toString(){
@@ -68,10 +84,7 @@ vector<dataPoint> getData(string csvFile){
 int main(){
 	// Initialization
 	//--------------------------------------------------------------------------------------
-	const int screenWidth = 800;
-	const int screenHeight = 450;
-	int xOFFSET = screenWidth / 2;
-	int yOFFSET = screenHeight / 2;
+	
 	
 	string CSV_FILE = "C:\\Users\\livid\\Documents\\GitHub\\MappingBot\\Visual_Display\\VSCode\\locationdata.csv";
 	
@@ -79,10 +92,7 @@ int main(){
 
 	cout<<allDataPoints[1].toString()<<endl;
 
-	cout<<"Test"<<endl;
-	return 0;
-
-	InitWindow(screenWidth, screenHeight, "Mapping Bot Uno");
+	InitWindow(SCREENWIDTH, SCREENHEIGHT, "Mapping Bot Uno");
 	SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
 
 	//--------------------------------------------------------------------------------------
@@ -100,12 +110,17 @@ int main(){
 	    //----------------------------------------------------------------------------------
 	    BeginDrawing();
 	    ClearBackground(RAYWHITE);
-		DrawCircle(0 + xOFFSET, 0 + yOFFSET,1,RED);
+		for(int i=1;i<allDataPoints.size();i++){
+			allDataPoints[i].displayLine();
+			allDataPoints[i].displayCircle();
+		}
+
+		DrawCircle(0 + xOFFSET, 0 + yOFFSET,5,GREEN);
 	    DrawText("Mapping Bot", 190, 200, 20, LIGHTGRAY);
 	    WaitTime(0.5);
 		EndDrawing();
 	        //----------------------------------------------------------------------------------
-	    }
+	}
 
 	// De-Initialization
 	//--------------------------------------------------------------------------------------
