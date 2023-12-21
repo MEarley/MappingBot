@@ -1,8 +1,9 @@
 import serial
 import csv
 
-COMPORT = "COM3"
-CSV_FILE = r"C:\Users\livid\Documents\GitHub\MappingBot\Visual_Display\VSCode\locationdata.csv"
+COMPORT = "COM6"
+#CSV_FILE = r"C:\Users\livid\Documents\GitHub\MappingBot\Visual_Display\VSCode\locationdata.csv"
+CSV_FILE = r"C:\Users\Michael\Documents\GitHub\MappingBot\Visual_Display\VSCode\locationdata.csv"
 global points
 points = []
 

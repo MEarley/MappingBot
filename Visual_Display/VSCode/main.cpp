@@ -18,7 +18,7 @@ using namespace std;
 #define	SCREENHEIGHT 450
 #define xOFFSET SCREENWIDTH / 2
 #define yOFFSET SCREENHEIGHT / 2
-#define SCALE 1
+#define SCALE 2
 
 class dataPoint{
 	public:
@@ -35,11 +35,11 @@ class dataPoint{
 	}
 
 	void displayCircle(){
-		DrawCircle(x + xOFFSET, y + yOFFSET,size,color);
+		DrawCircle(x + xOFFSET,  yOFFSET - y,size,color);
 	}
 
 	void displayLine(){
-		DrawLine(xOFFSET,yOFFSET,x + xOFFSET,y + yOFFSET, color);
+		DrawLine(xOFFSET,yOFFSET,x + xOFFSET,yOFFSET - y, color);
 	}
 
 	string toString(){
@@ -86,7 +86,8 @@ int main(){
 	//--------------------------------------------------------------------------------------
 	
 	
-	string CSV_FILE = "C:\\Users\\livid\\Documents\\GitHub\\MappingBot\\Visual_Display\\VSCode\\locationdata.csv";
+	//string CSV_FILE = "C:\\Users\\livid\\Documents\\GitHub\\MappingBot\\Visual_Display\\VSCode\\locationdata.csv";
+	string CSV_FILE = "C:\\Users\\Michael\\Documents\\GitHub\\MappingBot\\Visual_Display\\VSCode\\locationdata.csv";
 	
 	vector<dataPoint> allDataPoints = getData(CSV_FILE);
 
@@ -110,9 +111,14 @@ int main(){
 	    //----------------------------------------------------------------------------------
 	    BeginDrawing();
 	    ClearBackground(RAYWHITE);
-		for(int i=1;i<allDataPoints.size();i++){
+		for(int i=1;i<(allDataPoints.size());i++){
 			allDataPoints[i].displayLine();
-			allDataPoints[i].displayCircle();
+			//allDataPoints[i].displayCircle();
+
+			// Display Outline
+			if(i == 1)
+				continue;
+			DrawLine(allDataPoints[i-1].x + xOFFSET,yOFFSET - allDataPoints[i-1].y,allDataPoints[i].x + xOFFSET,yOFFSET - allDataPoints[i].y,BLACK);
 		}
 
 		DrawCircle(0 + xOFFSET, 0 + yOFFSET,5,GREEN);
