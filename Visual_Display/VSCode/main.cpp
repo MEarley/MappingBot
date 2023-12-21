@@ -1,9 +1,8 @@
 //============================================================================
-// Name        : Sort.cpp
-// Author      : 
-// Version     :
-// Copyright   : Your copyright notice
-// Description : Hello World in C++, Ansi-style
+// Name        : Mapping Bot Uno
+// Author      : Michael Earley
+// Description : Uses th ELEGOO Car v4.0 and an ultrasonic sensor to draw
+//			     out its surroundings in a 2D plane.
 //============================================================================
 
 #include <iostream>
@@ -18,7 +17,7 @@ using namespace std;
 #define	SCREENHEIGHT 450
 #define xOFFSET SCREENWIDTH / 2
 #define yOFFSET SCREENHEIGHT / 2
-#define SCALE 2
+#define SCALE 7
 
 class dataPoint{
 	public:
@@ -94,7 +93,7 @@ int main(){
 	cout<<allDataPoints[1].toString()<<endl;
 
 	InitWindow(SCREENWIDTH, SCREENHEIGHT, "Mapping Bot Uno");
-	SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
+	SetTargetFPS(60);               // Set game to run at 60 frames-per-second
 
 	//--------------------------------------------------------------------------------------
 
@@ -121,8 +120,9 @@ int main(){
 			DrawLine(allDataPoints[i-1].x + xOFFSET,yOFFSET - allDataPoints[i-1].y,allDataPoints[i].x + xOFFSET,yOFFSET - allDataPoints[i].y,BLACK);
 		}
 
+		DrawCircle(0 + xOFFSET, 0 + yOFFSET,6,BLACK);
 		DrawCircle(0 + xOFFSET, 0 + yOFFSET,5,GREEN);
-	    DrawText("Mapping Bot", 190, 200, 20, LIGHTGRAY);
+	    DrawText("Mapping Bot", 190, 200, 20, BLACK);
 	    WaitTime(0.5);
 		EndDrawing();
 	        //----------------------------------------------------------------------------------

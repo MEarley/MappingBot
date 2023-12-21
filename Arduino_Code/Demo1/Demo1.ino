@@ -2,7 +2,8 @@
 #include "DeviceDriverSet_xxx0.h"
 #include "ApplicationFunctionSet_xxx0.cpp"
 #include <Servo.h>
-
+#define FORWARD direction_just
+#define BACKWARD direction_back
 #define PI 3.1415926535897932384626433832795
 
 DeviceDriverSet_Motor AppMotor;
@@ -46,6 +47,7 @@ void setup() {
 }
 
 void loop() {
+
   if(!start){
     start = true;
     Serial.println("Start!");
@@ -66,6 +68,10 @@ void loop() {
 
     if(pos < 180){
       servo.write(pos++);              // tell servo to go to position in variable 'pos'
+      delay(15);                       // waits 15 ms for the servo to reach the position
+    }
+    else if(pos >= 180){
+      servo.write(pos++ - 180);              // tell servo to go to position in variable 'pos'
       delay(15);                       // waits 15 ms for the servo to reach the position
     }
 
@@ -89,10 +95,16 @@ void loop() {
 
     delay(100);
   
-    if(pos >= 180){
+    if(pos >= 360){
       isScanning = false;
       Serial.println("Done.");
     }
+    else if(pos==180){
+      ApplicationFunctionSet_SmartRobotCarMotionControl(Right /*direction*/, 200 /*speed*/);
+      delay(2000);
+      ApplicationFunctionSet_SmartRobotCarMotionControl(stop_it /*direction*/, 200 /*speed*/);
+    }
+
   }
   delay(10000);
 
