@@ -55,6 +55,7 @@ vector<dataPoint> getData(string csvFile){
 	vector<dataPoint> allDataPoints;
 	string line = "";
 	
+	// Gets data from CSV file by recording the values from each line
 	while(getline(dataFile,line)){
 		float x;
 		float y;
@@ -62,17 +63,21 @@ vector<dataPoint> getData(string csvFile){
 		string tmpString;
 		stringstream inputString(line);
 
+		// Obtain value of x
 		getline(inputString, tmpString, ',');
 		x = atof(tmpString.c_str());
 
+		// Obtain value of y
 		tmpString = "";
 		getline(inputString, tmpString, ',');
 		y = atof(tmpString.c_str());
 
+		// Obtain value of angle
 		tmpString = "";
 		getline(inputString, tmpString, ',');
 		angle = atof(tmpString.c_str());
 
+		// Save data to an object and push onto a vector
 		dataPoint point(x,y,angle);
 		allDataPoints.push_back(point);
 	}
@@ -83,8 +88,6 @@ vector<dataPoint> getData(string csvFile){
 int main(){
 	// Initialization
 	//--------------------------------------------------------------------------------------
-	
-	
 	string CSV_FILE = "locationdata.csv";
 	
 	vector<dataPoint> allDataPoints = getData(CSV_FILE);
@@ -99,9 +102,8 @@ int main(){
 	// Main game loop
 	while (!WindowShouldClose())    // Detect window close button or ESC key
 	{
-	    // Update
+	    // Update variables
 	    //----------------------------------------------------------------------------------
-	    // TODO: Update your variables here
 		if(IsKeyPressed(KEY_UP)){
 			SCALE++;
 		}
@@ -119,19 +121,23 @@ int main(){
 			allDataPoints[i].displayLine();
 			//allDataPoints[i].displayCircle();
 
-			// Display Outline
+			// Display Outline -----------
 			if(i == 1)
 				continue;
 			DrawLine((allDataPoints[i-1].x*SCALE) + xOFFSET,yOFFSET - (allDataPoints[i-1].y*SCALE),(allDataPoints[i].x*SCALE) + xOFFSET,yOFFSET - (allDataPoints[i].y*SCALE),BLACK);
+			// ---------------------------
 		}
 
+		// Center circle representing scan point
 		DrawCircle(0 + xOFFSET, 0 + yOFFSET,6,BLACK);
 		DrawCircle(0 + xOFFSET, 0 + yOFFSET,5,GREEN);
+
 	    DrawText("Mapping Bot", 190, 200, 20, BLACK);
 		DrawText(("Scale: " +  to_string(SCALE) + "X").c_str(), 0, 0, 20, LIGHTGRAY);
+		
 	    WaitTime(0.05);
 		EndDrawing();
-	        //----------------------------------------------------------------------------------
+	    //----------------------------------------------------------------------------------
 	}
 
 	// De-Initialization

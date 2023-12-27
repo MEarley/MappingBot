@@ -23,6 +23,8 @@ def readSerial():
      start = False
      while True:
           line=str(ser.readline())
+          
+          # Stop recording data
           if(line[2:][:-5] == "Done."):
                print(line[2:][:-5])
                saveData()
@@ -30,6 +32,7 @@ def readSerial():
 
           print(line[2:][:-5])
 
+          # Start recording data
           if(line[2:][:-5] == "Start!"):
                start = True
                continue
