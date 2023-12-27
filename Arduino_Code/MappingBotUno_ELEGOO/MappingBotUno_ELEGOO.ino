@@ -85,13 +85,7 @@ void loop() {
     float x = distance_cm * cos(radians); 
     float y = distance_cm * sin(radians);
 
-    //Serial.print(x);
-    //Serial.print(",");
-    //Serial.print(y);
-    //Serial.print(",");
-    //Serial.println(pos);
     Serial.println(String(x) + "," + String(y) + "," + String(pos));
-    //Serial.println("");
 
     delay(100);
   

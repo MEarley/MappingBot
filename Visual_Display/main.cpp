@@ -2,7 +2,7 @@
 // Name        : Mapping Bot Uno
 // Author      : Michael Earley
 // Description : Uses th ELEGOO Car v4.0 and an ultrasonic sensor to draw
-//			     out its surroundings in a 2D plane.
+//			     out its surroundings in a 2D plane. Press F5 to run on VSCode IDE
 //============================================================================
 
 #include <iostream>
@@ -17,7 +17,7 @@ using namespace std;
 #define	SCREENHEIGHT 450
 #define xOFFSET SCREENWIDTH / 2
 #define yOFFSET SCREENHEIGHT / 2
-#define SCALE 7
+int SCALE = 3;
 
 class dataPoint{
 	public:
@@ -28,17 +28,17 @@ class dataPoint{
 	Color color = RED;
 	
 	dataPoint(float x_,float y_,float angle_){
-		x = x_ * SCALE;
-		y = y_ * SCALE;
+		x = x_;
+		y = y_;
 		angle = angle_;
 	}
 
 	void displayCircle(){
-		DrawCircle(x + xOFFSET,  yOFFSET - y,size,color);
+		DrawCircle((x * SCALE) + xOFFSET,  yOFFSET - (y * SCALE),size,color);
 	}
 
 	void displayLine(){
-		DrawLine(xOFFSET,yOFFSET,x + xOFFSET,yOFFSET - y, color);
+		DrawLine(xOFFSET,yOFFSET,(x * SCALE) + xOFFSET,yOFFSET - (y * SCALE), color);
 	}
 
 	string toString(){
@@ -85,8 +85,7 @@ int main(){
 	//--------------------------------------------------------------------------------------
 	
 	
-	//string CSV_FILE = "C:\\Users\\livid\\Documents\\GitHub\\MappingBot\\Visual_Display\\VSCode\\locationdata.csv";
-	string CSV_FILE = "C:\\Users\\Michael\\Documents\\GitHub\\MappingBot\\Visual_Display\\VSCode\\locationdata.csv";
+	string CSV_FILE = "locationdata.csv";
 	
 	vector<dataPoint> allDataPoints = getData(CSV_FILE);
 
@@ -103,6 +102,12 @@ int main(){
 	    // Update
 	    //----------------------------------------------------------------------------------
 	    // TODO: Update your variables here
+		if(IsKeyPressed(KEY_UP)){
+			SCALE++;
+		}
+		else if(IsKeyPressed(KEY_DOWN) && SCALE > 1){
+			SCALE--;
+		}
 	    	
 	    //----------------------------------------------------------------------------------
 
@@ -110,20 +115,21 @@ int main(){
 	    //----------------------------------------------------------------------------------
 	    BeginDrawing();
 	    ClearBackground(RAYWHITE);
-		for(int i=1;i<(allDataPoints.size());i++){
+		for(int i=1;i<((int)allDataPoints.size());i++){
 			allDataPoints[i].displayLine();
 			//allDataPoints[i].displayCircle();
 
 			// Display Outline
 			if(i == 1)
 				continue;
-			DrawLine(allDataPoints[i-1].x + xOFFSET,yOFFSET - allDataPoints[i-1].y,allDataPoints[i].x + xOFFSET,yOFFSET - allDataPoints[i].y,BLACK);
+			DrawLine((allDataPoints[i-1].x*SCALE) + xOFFSET,yOFFSET - (allDataPoints[i-1].y*SCALE),(allDataPoints[i].x*SCALE) + xOFFSET,yOFFSET - (allDataPoints[i].y*SCALE),BLACK);
 		}
 
 		DrawCircle(0 + xOFFSET, 0 + yOFFSET,6,BLACK);
 		DrawCircle(0 + xOFFSET, 0 + yOFFSET,5,GREEN);
 	    DrawText("Mapping Bot", 190, 200, 20, BLACK);
-	    WaitTime(0.5);
+		DrawText(("Scale: " +  to_string(SCALE) + "X").c_str(), 0, 0, 20, LIGHTGRAY);
+	    WaitTime(0.05);
 		EndDrawing();
 	        //----------------------------------------------------------------------------------
 	}
