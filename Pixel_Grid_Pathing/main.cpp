@@ -14,6 +14,8 @@
 #include "AStarAlgorithm.h"
 using namespace std;
 
+//int xOFFSET = 0;
+//int yOFFSET = 0;
 int xOFFSET = SCREENWIDTH / 2;
 int yOFFSET = SCREENHEIGHT / 2;
 int SCALE = 3;
@@ -85,15 +87,50 @@ vector<dataPoint> getData(string csvFile){
 }
 
 void setWalls(set<Node*> &walls,vector<dataPoint> data,vector<vector<Node>> &mat){
+	// Clear all walls
 	for(Node* segment : walls){
 		segment->nType.name = VOID;
 		segment->nType.color = BACKGROUND_COLOR;
 	}
 	walls.clear();
 	
+	// Add walls from data
+	int width = mat.size();
+	int height = mat[0].size();
 	for(dataPoint point : data){
-		mat[point.x / 2][point.y / 2] = Node();
-		walls
+		if(((point.x / SCALE) + (width / 2) >= width) || ((point.y / SCALE) + (height / 2) >= height) || 
+		   ((point.x / SCALE) + (width / 2) < 0) || ((point.y / SCALE) + (height / 2) < 0))
+			continue;
+		Node* wall = &mat[(point.x / SCALE) + (width / 2)][(point.y / SCALE) + (height / 2)];
+		wall->nType.name = WALL;
+		wall->nType.color = WALL_COLOR;
+		walls.insert(wall);
+    }
+}
+
+// Display for the radar 
+void drawRadar(vector<dataPoint> data){
+	for(int i=1;i<((int)data.size());i++){
+			data[i].displayLine();
+			//allDataPoints[i].displayCircle();
+
+			// Display Outline -----------
+			if(i == 1)
+				continue;
+			DrawLine((data[i-1].x*SCALE) + xOFFSET,yOFFSET - (data[i-1].y*SCALE),(data[i].x*SCALE) + xOFFSET,yOFFSET - (data[i].y*SCALE),BLACK);
+			// ---------------------------
+	}
+
+	// Center circle representing scan point
+	DrawCircle(0 + xOFFSET, 0 + yOFFSET,6,BLACK);
+	DrawCircle(0 + xOFFSET, 0 + yOFFSET,5,GREEN);
+}
+
+// Display for the pathing algorithm
+void drawPath(set<Node*> &walls){
+	// Draw walls
+    for(Node* segment : walls){
+        DrawRectangle(segment->get_x_scaled(),segment->get_y_scaled(),SCALE,SCALE,WALL_COLOR);
     }
 }
 
@@ -127,7 +164,7 @@ int main(){
     end->nType.color = ORANGE;
 	set<Node*> walls;
 
-	setWalls(walls,allDataPoints);
+	setWalls(walls,allDataPoints,matrix);
 
 	InitWindow(SCREENWIDTH, SCREENHEIGHT, "Mapping Bot Uno");
 	SetTargetFPS(60);               // Set game to run at 60 frames-per-second
@@ -152,24 +189,13 @@ int main(){
 	    //----------------------------------------------------------------------------------
 	    BeginDrawing();
 	    ClearBackground(RAYWHITE);
-		for(int i=1;i<((int)allDataPoints.size());i++){
-			allDataPoints[i].displayLine();
-			//allDataPoints[i].displayCircle();
-
-			// Display Outline -----------
-			if(i == 1)
-				continue;
-			DrawLine((allDataPoints[i-1].x*SCALE) + xOFFSET,yOFFSET - (allDataPoints[i-1].y*SCALE),(allDataPoints[i].x*SCALE) + xOFFSET,yOFFSET - (allDataPoints[i].y*SCALE),BLACK);
-			// ---------------------------
-		}
-
-		// Center circle representing scan point
-		DrawCircle(0 + xOFFSET, 0 + yOFFSET,6,BLACK);
-		DrawCircle(0 + xOFFSET, 0 + yOFFSET,5,GREEN);
+		
+		drawPath(walls);
 
 	    DrawText("Mapping Bot", 190, 200, 20, BLACK);
 		DrawText(("Scale: " +  to_string(SCALE) + "X").c_str(), 0, 0, 20, LIGHTGRAY);
-		
+		DrawCircle(0 + xOFFSET, 0 + yOFFSET,6,BLACK);
+		DrawCircle(0 + xOFFSET, 0 + yOFFSET,5,GREEN);
 	    WaitTime(0.05);
 		EndDrawing();
 	    //----------------------------------------------------------------------------------
