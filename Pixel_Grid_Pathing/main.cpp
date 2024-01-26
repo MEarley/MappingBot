@@ -18,7 +18,11 @@ using namespace std;
 //int yOFFSET = 0;
 int xOFFSET = SCREENWIDTH / 2;
 int yOFFSET = SCREENHEIGHT / 2;
-int SCALE = 3;
+int SCALE = 1;//((SCREENWIDTH / SCALE)+1) * scale/4			(matrix.size()*SCALE/4)
+int matrixOffsetX = (SCREENWIDTH + SCALE) / 4;
+int matrixOffsetY = (SCREENHEIGHT + SCALE) / 4;
+//int matrixOffsetX = ((SCREENWIDTH / SCALE)+1) * SCALE/4;	
+//int matrixOffsetY = ((SCREENHEIGHT / SCALE)+1) * SCALE/4;
 
 class dataPoint{
 	public:
@@ -130,7 +134,8 @@ void drawRadar(vector<dataPoint> data){
 void drawPath(set<Node*> &walls){
 	// Draw walls
     for(Node* segment : walls){
-        DrawRectangle(segment->get_x_scaled(),segment->get_y_scaled(),SCALE,SCALE,WALL_COLOR);
+        //DrawRectangle(segment->get_x_scaled(),segment->get_y_scaled(),SCALE-1,SCALE-1,WALL_COLOR);
+		DrawRectangle(((SCREENWIDTH - segment->get_x_scaled()) / 2) + matrixOffsetX,((SCREENHEIGHT - segment->get_y_scaled()) / 2) + matrixOffsetY,SCALE,SCALE,WALL_COLOR);
     }
 }
 
@@ -143,6 +148,8 @@ int main(){
 
 	cout<<allDataPoints[1].toString()<<endl;
 
+
+	// Create matrix
 	vector<vector<Node>> matrix((SCREENWIDTH / SCALE)+1,vector<Node>((SCREENHEIGHT / SCALE)+1));
 	for(int w=0;w<(int)matrix.size();w++){
             for(int h=0;h<(int)matrix[w].size();h++){
@@ -176,21 +183,37 @@ int main(){
 	{
 	    // Update variables
 	    //----------------------------------------------------------------------------------
+
+		cout<<matrixOffsetX<<" before"<<endl;
 		if(IsKeyPressed(KEY_UP)){
 			SCALE++;
+			matrixOffsetX = (SCREENWIDTH + SCALE) / 4;
+			matrixOffsetY = (SCREENHEIGHT + SCALE) / 4;
 		}
 		else if(IsKeyPressed(KEY_DOWN) && SCALE > 1){
 			SCALE--;
+			matrixOffsetX = (SCREENWIDTH + SCALE) / 4;
+			matrixOffsetY = (SCREENHEIGHT + SCALE) / 4;
 		}
-	    	
+	    cout<<matrixOffsetX<<" after"<<endl;
 	    //----------------------------------------------------------------------------------
 
 	    // Draw
 	    //----------------------------------------------------------------------------------
 	    BeginDrawing();
 	    ClearBackground(RAYWHITE);
-		
+
+		// Draw a centered map of the matrix
+		for(int w=0;w<(int)matrix.size();w++){
+            for(int h=0;h<(int)matrix[w].size();h++){
+				//DrawRectangle(((SCREENWIDTH - matrix[w][h].get_x_scaled()) / 2) + (matrix.size()*SCALE/4),((SCREENHEIGHT - matrix[w][h].get_y_scaled()) / 2) + (matrix[0].size()*SCALE/4),SCALE,SCALE,LIGHTGRAY);
+				DrawRectangle(((SCREENWIDTH - matrix[w][h].get_x_scaled()) / 2) + matrixOffsetX,((SCREENHEIGHT - matrix[w][h].get_y_scaled()) / 2) + matrixOffsetY,SCALE,SCALE,LIGHTGRAY);
+
+			}
+		}
+
 		drawPath(walls);
+		drawRadar(allDataPoints);
 
 	    DrawText("Mapping Bot", 190, 200, 20, BLACK);
 		DrawText(("Scale: " +  to_string(SCALE) + "X").c_str(), 0, 0, 20, LIGHTGRAY);

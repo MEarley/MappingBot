@@ -118,10 +118,10 @@ class Node{
     }
 
     int get_x_scaled(){
-        return (x * SCALE) + xOFFSET;
+        return (x * SCALE);
     }
     int get_y_scaled(){
-        return (y * SCALE) + yOFFSET;
+        return (y * SCALE);
     }
     void set_x(int x_){
         x = x_;
